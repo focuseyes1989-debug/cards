@@ -1,0 +1,16 @@
+.gradle/
+build/
+app/build/
+local.properties
+.local-tools.ps1
+dist/
+device-test/
+test-media/
+*.png
+verification.json
+installer-ui.xml
+*.keystore
+*.jks
+device-web.cjs
+make-test-media.cjs
+node_modules/

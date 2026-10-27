@@ -1,0 +1,1 @@
+require('./verify-admin.cjs');

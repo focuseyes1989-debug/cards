@@ -1,0 +1,6 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'com.invitation.gallery'
+ compileSdk 36
+ defaultConfig { applicationId 'com.invitation.gallery'; minSdk 26; targetSdk 35; versionCode = (project.findProperty('appVersionCode') ?: '7').toInteger(); versionName = (project.findProperty('appVersionName') ?: '1.6') }
+}
