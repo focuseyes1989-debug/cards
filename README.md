@@ -5,8 +5,9 @@ Offline Android catalog for invitation-card shops, designed for tablets and land
 ## Features
 
 - Pink catalog with categories, search, prices, design details and image/video galleries.
-- Password-protected Admin panel with password setup/change, logout and background locking.
+- Password-protected Admin with separate Cards, Categories and Settings pages; password setup/change, logout and background locking.
 - One Title field, Design Code, category, colors, size, paper type, pricing mode, price note, Featured and Customer visibility.
+- Paginated Cards and Categories lists (12 per page), search, category/visibility/media filters, category card counts and direct links. Search, filters, page and scroll position are retained after editing.
 - Android Gallery/photo picker for importing media into private app storage.
 - ZIP backup/restore for the catalog and media. Each device keeps its own Admin password separately.
 - Admin → **App update စစ်ရန်** checks this repository's latest GitHub Release, downloads a newer APK and opens Android's update installer.

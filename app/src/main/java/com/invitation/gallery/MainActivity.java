@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
     Uri u=r.getUrl(); if(!"app.local".equals(u.getHost()))return new WebResourceResponse("text/plain","UTF-8",new ByteArrayInputStream(new byte[0]));
     try {String p=u.getPath(); if(p.startsWith("/media/")){String name=p.substring(7);if(!name.matches("[a-zA-Z0-9.-]+"))throw new IOException(); File f=new File(getFilesDir(),name);return new WebResourceResponse(mimeFor(name),null,new FileInputStream(f));}
      if("/admin.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("admin.js"));
+     if("/admin-pages.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("admin-pages.js"));
      if("/designs.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("designs.js"));
      if("/updates.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("updates.js"));
      if("/layout.css".equals(p))return new WebResourceResponse("text/css","UTF-8",getAssets().open("layout.css"));
