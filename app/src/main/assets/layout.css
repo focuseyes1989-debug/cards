@@ -96,3 +96,18 @@ input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:var(--ac
 .admin-table .thumb-placeholder small{font-size:8px;line-height:1.5;text-align:center;margin:0;white-space:normal}
 .admin-card-thumb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media(max-width:1000px){.admin-card-identity{gap:10px;min-width:210px}.admin-card-thumb{width:56px;height:72px;min-width:56px;min-height:72px;flex-basis:56px}}
+.admin-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.cards-view-switch{display:flex;border:1px solid var(--line);border-radius:9px;background:white;padding:3px;gap:3px}
+.cards-view-switch button{min-height:40px;padding:5px 12px;border:0;background:transparent;border-radius:6px;color:var(--muted)}
+.cards-view-switch button[aria-pressed=true]{background:#fbe3ee;color:var(--accent);font-weight:600}
+.admin-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;padding:18px;align-items:stretch}
+.admin-grid-card{border:1px solid var(--line);border-radius:12px;background:white;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.admin-grid-card>.admin-card-thumb{width:100%;height:230px;min-width:0;min-height:230px;flex:0 0 230px;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px;background:#fff5f9}
+.admin-grid-card .thumb-placeholder svg{width:58px;height:46px}.admin-grid-card .thumb-symbol{font-size:52px}.admin-grid-card .thumb-placeholder small{font-size:12px;margin-top:8px}
+.admin-grid-info{padding:16px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:0}
+.admin-grid-info strong{display:block;font-weight:500;line-height:1.8;overflow-wrap:anywhere}.admin-grid-info small{display:block;color:var(--muted);font-size:11px;line-height:1.8;overflow-wrap:anywhere}
+.admin-grid-price{color:var(--accent);font-weight:600;line-height:1.8}.admin-grid-meta{margin-top:auto;display:grid;gap:6px;justify-items:start}.admin-grid-meta .admin-status{margin:0}
+.admin-grid-info>button{width:100%;min-height:42px}
+@media(max-width:1000px){.admin-cards-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));padding:14px;gap:14px}.admin-grid-card>.admin-card-thumb{height:210px;min-height:210px;flex-basis:210px}}
+@media(max-height:500px){.admin-header-actions{gap:8px}.admin-header-actions>.primary{min-height:42px;padding:7px 12px}.cards-view-switch button{min-height:34px;padding:4px 10px}.admin-cards-grid{gap:12px;padding:12px}}
+@media(max-width:650px){.admin-page-header:has(.admin-header-actions){flex-wrap:wrap}.admin-header-actions{width:100%;justify-content:space-between}.admin-cards-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}.admin-grid-card>.admin-card-thumb{height:190px;min-height:190px;flex-basis:190px}}

@@ -5,9 +5,9 @@ Offline Android catalog for invitation-card shops, designed for tablets and land
 ## Features
 
 - Pink catalog with categories, search, prices, design details and image/video galleries.
-- Password-protected Admin with separate Cards, Categories and Settings pages; password setup/change, logout and background locking.
+- Password-protected Admin with separate Cards, Categories and Settings pages; password setup/change, logout and a remembered local session.
 - One Title field, Design Code, category, colors, size, paper type, pricing mode, price note, Featured and Customer visibility.
-- Cards show clickable invitation photo thumbnails, with video-only and missing-photo placeholders.
+- Cards offer List and Grid views. The selected view is remembered; Grid shows larger clickable photos. Video-only and missing-photo placeholders are included.
 - Paginated Cards and Categories lists (12 per page), search, category/visibility/media filters, category card counts and direct links. Search, filters, page and scroll position are retained after editing.
 - Android Gallery/photo picker for importing media into private app storage.
 - ZIP backup/restore for the catalog and media. Each device keeps its own Admin password separately.
@@ -56,3 +56,4 @@ On first in-app installation, Android may ask to enable **Allow from this source
 Imported media and the catalog are private to the app. Export a backup before uninstalling or clearing app data. Backups do not include the Admin password or app updater files. Existing single and bilingual design titles migrate to one Title without dropping either language.
 
 Android 8+ is supported. Android 13+ uses the platform photo picker; older versions use a Gallery picker. Current APKs are direct-install builds using the existing signing identity, without Play Store distribution.
+Admin login stays active across backgrounding, Gallery pickers, activity recreation and app restarts. Back and Customer catalog preview preserve the session. Explicit Logout or a password change ends it. Session state is stored only in private on-device preferences and is tied to the current password credential; it is not included in catalog backups.

@@ -12,6 +12,9 @@ public class MainActivity extends Activity {
  WebView web; AppUpdater updater; String pendingId=""; volatile boolean authenticated=false; volatile boolean pickerActive=false;
  final Object authLock=new Object();
  android.content.SharedPreferences auth(){return getSharedPreferences("admin_auth",MODE_PRIVATE);}
+ android.content.SharedPreferences session(){return getSharedPreferences("admin_session",MODE_PRIVATE);}
+ boolean restoreAdminSession(){return configured()&&session().getBoolean("active",false)&&auth().getString("salt","").equals(session().getString("credentialSalt",""));}
+ boolean setAdminSession(boolean active){boolean saved=active?session().edit().putBoolean("active",true).putString("credentialSalt",auth().getString("salt","")).commit():session().edit().clear().commit();authenticated=active&&saved;return saved;}
  boolean configured(){return auth().contains("hash");}
  String hashPassword(String password,byte[] salt)throws Exception{
   javax.crypto.spec.PBEKeySpec spec=new javax.crypto.spec.PBEKeySpec(password.toCharArray(),salt,120000,256);
@@ -20,7 +23,7 @@ public class MainActivity extends Activity {
  boolean matches(String password)throws Exception{return java.security.MessageDigest.isEqual(hashPassword(password,android.util.Base64.decode(auth().getString("salt",""),0)).getBytes("UTF-8"),auth().getString("hash","").getBytes("UTF-8"));}
  boolean storePassword(String password)throws Exception{byte[] salt=new byte[32];new java.security.SecureRandom().nextBytes(salt);return auth().edit().putString("salt",android.util.Base64.encodeToString(salt,2)).putString("hash",hashPassword(password,salt)).putInt("failures",0).putLong("lockedUntil",0).commit();}
  boolean saveCatalog(String json){try{new JSONObject(json);File tmp=new File(getFilesDir(),"catalog.tmp");try(FileOutputStream out=new FileOutputStream(tmp)){out.write(json.getBytes("UTF-8"));out.getFD().sync();}return tmp.renameTo(new File(getFilesDir(),"catalog.json"));}catch(Exception e){return false;}}
- @Override public void onCreate(Bundle state){super.onCreate(state);
+ @Override public void onCreate(Bundle state){super.onCreate(state);authenticated=restoreAdminSession();
   getWindow().getDecorView().setSystemUiVisibility(5894);
   web=new WebView(this); setContentView(web);updater=new AppUpdater(this); if(android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE == (getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE)) WebView.setWebContentsDebuggingEnabled(true);
   web.getSettings().setJavaScriptEnabled(true); web.getSettings().setDomStorageEnabled(true);
@@ -48,10 +51,10 @@ public class MainActivity extends Activity {
   @JavascriptInterface public void installUpdate(){if(authenticated)runOnUiThread(()->updater.install());}
   @JavascriptInterface public void openUpdateRepository(){runOnUiThread(()->{try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(AppUpdater.REPOSITORY+"/releases")));}catch(Exception e){js("toast('Browser မတွေ့ပါ။')");}});}
   @JavascriptInterface public String authState(){try{return new JSONObject().put("configured",configured()).put("authenticated",authenticated).put("retryAfter",Math.max(0,(auth().getLong("lockedUntil",0)-System.currentTimeMillis()+999)/1000)).toString();}catch(Exception e){return "{}";}}
-  @JavascriptInterface public String setupPassword(String password){synchronized(authLock){if(configured())return "exists";if(password.length()<6||password.length()>128)return "weak";try{if(!storePassword(password))return "error";authenticated=true;return "ok";}catch(Exception e){return "error";}}}
-  @JavascriptInterface public String login(String password){synchronized(authLock){if(!configured())return "unconfigured";if(auth().getLong("lockedUntil",0)>System.currentTimeMillis())return "locked";try{if(matches(password)){auth().edit().putInt("failures",0).putLong("lockedUntil",0).commit();authenticated=true;return "ok";}int failures=auth().getInt("failures",0)+1;auth().edit().putInt("failures",failures>=5?0:failures).putLong("lockedUntil",failures>=5?System.currentTimeMillis()+30000:0).commit();return failures>=5?"locked":"invalid";}catch(Exception e){return "error";}}}
-  @JavascriptInterface public String changePassword(String current,String next){synchronized(authLock){if(!authenticated)return "unauthorized";if(next.length()<6||next.length()>128)return "weak";try{if(!matches(current))return "invalid";return storePassword(next)?"ok":"error";}catch(Exception e){return "error";}}}
-  @JavascriptInterface public void logout(){authenticated=false;}
+  @JavascriptInterface public String setupPassword(String password){synchronized(authLock){if(configured())return "exists";if(password.length()<6||password.length()>128)return "weak";try{if(!storePassword(password))return "error";return setAdminSession(true)?"ok":"error";}catch(Exception e){return "error";}}}
+  @JavascriptInterface public String login(String password){synchronized(authLock){if(!configured())return "unconfigured";if(auth().getLong("lockedUntil",0)>System.currentTimeMillis())return "locked";try{if(matches(password)){auth().edit().putInt("failures",0).putLong("lockedUntil",0).commit();return setAdminSession(true)?"ok":"error";}int failures=auth().getInt("failures",0)+1;auth().edit().putInt("failures",failures>=5?0:failures).putLong("lockedUntil",failures>=5?System.currentTimeMillis()+30000:0).commit();return failures>=5?"locked":"invalid";}catch(Exception e){return "error";}}}
+  @JavascriptInterface public String changePassword(String current,String next){synchronized(authLock){if(!authenticated)return "unauthorized";if(next.length()<6||next.length()>128)return "weak";try{if(!matches(current))return "invalid";if(!storePassword(next))return "error";setAdminSession(false);return "ok";}catch(Exception e){return "error";}}}
+  @JavascriptInterface public void logout(){synchronized(authLock){setAdminSession(false);}}
   @JavascriptInterface public boolean initialize(String json){return !configured()&&!new File(getFilesDir(),"catalog.json").exists()&&saveCatalog(json);}
   @JavascriptInterface public String read(){try{return new String(java.nio.file.Files.readAllBytes(new File(getFilesDir(),"catalog.json").toPath()),"UTF-8");}catch(Exception e){return "";}}
   @JavascriptInterface public boolean save(String json){return authenticated&&saveCatalog(json);}
@@ -75,6 +78,5 @@ public class MainActivity extends Activity {
  }
  static String mimeFor(String name){String ext=name.substring(name.lastIndexOf('.')+1);switch(ext){case "mp4":return "video/mp4";case "webm":return "video/webm";case "mov":return "video/quicktime";case "png":return "image/png";case "webp":return "image/webp";case "gif":return "image/gif";case "heic":return "image/heic";default:return "image/jpeg";}}
  static void copy(InputStream in,OutputStream out)throws IOException{byte[] b=new byte[65536];int n;while((n=in.read(b))!=-1)out.write(b,0,n);}
- @Override protected void onStop(){super.onStop();if(!pickerActive){authenticated=false;js("if(typeof sessionLocked==='function')sessionLocked()");}}
  @Override public void onBackPressed(){js("back()");}
 }
