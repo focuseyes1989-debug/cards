@@ -22,8 +22,9 @@ try {
     if(!($certs | Where-Object { $_ -match 'certificate SHA-256 digest:' -and $_.EndsWith($expected) })) { throw 'Signing key differs from installed app. Use the original keystore.' }
     $manifest = [ordered]@{schema=1;packageName='com.invitation.gallery';versionCode=[long]$code;versionName=$version;minSdk=26;apkUrl="https://github.com/$repo/releases/download/$tag/Invitation-Gallery.apk";sha256=(Get-FileHash -Algorithm SHA256 $apk).Hash.ToLowerInvariant();size=(Get-Item $apk).Length;notes=(Get-Content -LiteralPath $NotesFile -Raw).Trim()}
     [IO.File]::WriteAllText("$PSScriptRoot\dist\update.json",($manifest | ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
-    $existing = & $gh release view $tag --repo $repo --json isDraft 2>$null
-    if($LASTEXITCODE -eq 0) {
+    $existing = $null
+    try { $existing = & $gh release view $tag --repo $repo --json isDraft 2>$null } catch { $existing = $null }
+    if($existing) {
         if(!(($existing | ConvertFrom-Json).isDraft)) { throw 'This version is already published. Increase versionCode and versionName before releasing.' }
     } else {
         & $gh release create $tag --repo $repo --draft --target main --title "Invitation Gallery $tag" --notes-file $NotesFile
