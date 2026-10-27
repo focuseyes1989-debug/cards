@@ -1,8 +1,7 @@
-Admin management is now organized into dedicated pages.
+Cards now show invitation photo thumbnails beside each title and design code.
 
-- Cards page: search by title/code/color, filter by category, visibility and media, and browse 12 cards per page.
-- Categories page: search, paginated category management, card counts, and direct links to each category's cards.
-- Settings page: shop name, Admin password, backup/restore and GitHub app updates.
-- Keep search, filters, page and scroll position when returning from an editor.
-- Confirm deletions and prevent deletion of categories that still contain cards.
-- Retain the existing catalog, media and Admin password.
+- Tap a thumbnail to open the correct card editor directly.
+- Use the first available photo even when the cover is a video.
+- Show clear placeholders for video-only cards, cards without media, and unavailable photos.
+- Load photos lazily within the existing 12-card pages.
+- Keep search, filters, pagination, scroll position and existing catalog data.

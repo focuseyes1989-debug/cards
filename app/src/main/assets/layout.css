@@ -86,3 +86,13 @@ input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:var(--ac
 @media(max-height:500px){.admin-sidebar{padding:14px 12px}.admin-page-nav{margin-top:16px;gap:6px}.admin-page-nav button{min-height:42px;padding:7px 10px}.admin-sidebar .foot{margin-top:auto}.admin-main{padding:14px 18px}.admin-page-header{margin-bottom:12px}.admin-page-header h1{font-size:21px;margin:2px 0}.admin-page-header .muted{display:none}.admin-page-tools{margin-bottom:10px;gap:8px}.admin-page-tools input,.admin-page-tools select{height:42px;padding:6px 10px}.admin-page-tools input{flex-basis:160px}.admin-page-tools select{flex-basis:110px;width:110px;min-width:90px}.admin-pagination{padding-top:10px}.admin-pagination button{min-height:38px;padding:5px 10px}.admin-table th,.admin-table td{padding:10px 12px}}
 @media(max-width:650px){.admin-sidebar{width:145px}.admin-main{padding:14px}.admin-page-header{align-items:flex-start;gap:8px}.admin-page-header h1{font-size:19px}.admin-page-header>button{padding:8px;min-height:42px;font-size:12px}.admin-pagination{flex-direction:column;gap:6px;padding-top:8px}.admin-page-nav button{padding:8px}.admin-settings-section{padding:16px}}
 .admin-sidebar .foot{margin-top:auto}.admin-page-body:not(.admin-settings-body){overflow:hidden}.admin-table-wrap{height:100%;min-height:0}
+.admin-card-identity{display:flex;align-items:center;gap:14px;min-width:230px}
+.admin-card-title{flex:1;min-width:0;overflow-wrap:anywhere}
+.admin-card-thumb{position:relative;width:68px;height:84px;min-width:68px;min-height:84px;flex:0 0 68px;padding:4px;border-radius:8px;overflow:hidden;background:#fff5f9;border:1px solid var(--line)}
+.admin-card-thumb img{width:100%;height:100%;object-fit:contain;display:block;border-radius:4px}
+.admin-card-thumb img[hidden]{display:none}.admin-card-thumb.has-photo .thumb-placeholder{display:none}
+.thumb-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;height:100%;color:var(--muted)}
+.thumb-placeholder svg{width:32px;height:26px;stroke:currentColor;stroke-width:1.5}.thumb-placeholder .thumb-symbol{font-size:30px;line-height:1}
+.admin-table .thumb-placeholder small{font-size:8px;line-height:1.5;text-align:center;margin:0;white-space:normal}
+.admin-card-thumb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:1000px){.admin-card-identity{gap:10px;min-width:210px}.admin-card-thumb{width:56px;height:72px;min-width:56px;min-height:72px;flex-basis:56px}}
