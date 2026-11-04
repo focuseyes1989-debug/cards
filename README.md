@@ -1,6 +1,6 @@
 # Invitation Gallery
 
-Offline Android catalog for invitation-card shops, designed for tablets and landscape phones. Package: `com.invitation.gallery`.
+Offline Android catalog for invitation-card shops, supports automatic portrait and landscape rotation on tablets and phones. Package: `com.invitation.gallery`.
 
 ## Features
 

@@ -1,6 +1,6 @@
-Use the supplied pink invitation-shop logo as the Android app icon.
+Support portrait and landscape on Android phones and tablets.
 
-- Add white-background adaptive and fallback launcher icons.
-- Keep the original logo artwork and lettering unchanged.
-- Leave safe padding for circular and rounded launcher masks.
-- Preserve the catalog, media, password and remembered Admin session.
+- Automatically rotate the app without losing the current editor or Admin session.
+- Use compact top navigation on portrait phones to give cards and forms more room.
+- Adapt the customer catalog, Admin grid, filters, Settings and dialogs to narrow screens.
+- Preserve existing catalog, media, password and app icon.

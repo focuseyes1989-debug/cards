@@ -1,4 +1,4 @@
-/* Shared rhythm for Burmese and Latin text, tablet and landscape phone. */
+/* Shared rhythm for Burmese and Latin text across phone and tablet orientations. */
 body{font-family:system-ui,"Noto Sans Myanmar",sans-serif;line-height:1.7}
 button,input,select,textarea{font:inherit;line-height:1.7}
 button{min-height:48px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;vertical-align:middle}
@@ -111,3 +111,22 @@ input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:var(--ac
 @media(max-width:1000px){.admin-cards-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));padding:14px;gap:14px}.admin-grid-card>.admin-card-thumb{height:210px;min-height:210px;flex-basis:210px}}
 @media(max-height:500px){.admin-header-actions{gap:8px}.admin-header-actions>.primary{min-height:42px;padding:7px 12px}.cards-view-switch button{min-height:34px;padding:4px 10px}.admin-cards-grid{gap:12px;padding:12px}}
 @media(max-width:650px){.admin-page-header:has(.admin-header-actions){flex-wrap:wrap}.admin-header-actions{width:100%;justify-content:space-between}.admin-cards-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}.admin-grid-card>.admin-card-thumb{height:190px;min-height:190px;flex-basis:190px}}
+/* Narrow portrait screens use top navigation so cards and forms retain usable width. */
+@media(max-width:600px) and (orientation:portrait){
+ .shell{flex-direction:column;min-height:100dvh}
+ .shell>aside{position:static;width:100%;height:auto;padding:14px 16px;border-right:0;border-bottom:1px solid var(--line)}
+ .shell .brand{font-size:21px}.shell .tag{font-size:9px}.shell .section-label{margin:12px 0 6px}
+ .shell .nav{flex-direction:row;flex:none;overflow:auto;gap:8px}.shell .nav button{white-space:nowrap;min-height:44px}
+ .shell .foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:0;gap:8px}.shell .foot button{width:auto;min-height:44px;padding:8px 10px}.shell .offline{font-size:10px}
+ .shell main{padding:18px 16px}.top{flex-wrap:wrap;gap:8px}.top h1{font-size:26px}.tools{gap:8px;margin:18px 0}.tools input{flex-basis:100%}.tools select{flex:1;min-width:0}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info{padding:12px;gap:8px}.info h3{font-size:14px}.meta{flex-wrap:wrap;gap:2px}
+ .overlay{padding:10px}.modal{max-width:100%;max-height:calc(100dvh - 20px)}.detail{grid-template-columns:minmax(0,1fr)}.hero{height:38dvh}.modal-head h2{font-size:19px}
+ .admin-page-layout{flex-direction:column}.admin-sidebar{width:100%;height:auto;padding:10px 14px;border-right:0;border-bottom:1px solid var(--line)}
+ .admin-sidebar .brand,.admin-sidebar .tag,.admin-sidebar .offline{display:none}
+ .admin-page-nav{display:flex;gap:6px;margin:0}.admin-page-nav button{flex:1;min-width:0;padding:8px 6px;min-height:44px;gap:4px;font-size:12px}
+ .admin-sidebar .foot{display:flex;margin:8px 0 0;padding:0;gap:8px}.admin-sidebar .foot button{width:auto;min-height:40px;padding:6px 10px;font-size:12px}.admin-sidebar .foot button:last-child{margin-left:auto}
+ .admin-main{height:auto;min-height:0;padding:14px;flex:1}.admin-page-header{margin-bottom:12px}.admin-page-header .muted{display:none}
+ .admin-page-tools{gap:8px;margin-bottom:10px}.admin-page-tools input{flex-basis:100%;max-width:none}.admin-page-tools select{flex:1 1 90px;width:90px;min-width:0;font-size:12px;padding:8px}
+ .admin-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}.admin-grid-card>.admin-card-thumb{height:180px;min-height:180px;flex-basis:180px;padding:8px}.admin-grid-info{padding:10px;gap:8px}.admin-grid-info .admin-row-actions{flex-wrap:wrap}.admin-grid-info button{padding:6px 8px;min-height:40px}
+ .admin-pagination{gap:4px}.admin-settings-section .row{flex-wrap:wrap}.admin-settings-section .row>input{flex-basis:100%}
+}
