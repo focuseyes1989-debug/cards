@@ -64,7 +64,56 @@ function detail(id,n=0){
  const i=db.items.find(item=>item.id===id);if(!i||(!admin&&i.visible===false)){toast('ဤ Design ကို မပြထားပါ။');return}
  current=id;const m=i.media[n];
  const specs=[['အရောင်များ',i.colors],['အရွယ်အစား',i.size],['စက္ကူအမျိုးအစား',i.paperType],['ဈေးနှုန်းပုံစံ',pricingModes[i.pricingMode]||pricingModes.per_item],['အနည်းဆုံး အရေအတွက်',i.min+' စောင်']].filter(([,value])=>value);
- modal(`<div class="modal-head"><span class="muted">${esc(i.code)} / ${esc(db.categories.find(c=>c.id===i.category)?.name||'')}</span><button onclick="back()">✕ ပိတ်ရန်</button></div><div class="detail"><div><div class="hero">${m?(m.video?`<video src="${esc(m.src)}" controls playsinline></video>`:`<img src="${esc(m.src)}" alt="${esc(displayName(i))}">`):sample(i)}</div><div class="thumbs">${i.media.map((m,k)=>`<button onclick="detail('${id}',${k})">${m.video?'▷':`<img src="${esc(m.src)}" alt="Photo ${k+1}">`}</button>`).join('')}</div></div><div><div class="eyebrow">INVITATION DETAILS</div><h1>${esc(displayName(i))}</h1><div class="design-status">${i.featured?'<span>★ လူကြိုက်များ</span>':''}${admin&&i.visible===false?'<span>Customer ကို မပြထားပါ</span>':''}</div><div class="large-price">${esc(priceDisplay(i))}</div>${i.pricingMode!=='quote'?`<div class="muted">${esc(i.unit)} အတွက်${i.demo?' · နမူနာဈေးနှုန်း':''}</div>`:''}${i.priceNote?`<p class="price-note">${esc(i.priceNote)}</p>`:''}<dl class="design-specs">${specs.map(([label,value])=>`<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>${i.description?`<p style="white-space:pre-wrap">${esc(i.description)}</p>`:''}${admin?`<button class="primary" onclick="edit('${id}')">နမူနာ ပြင်ဆင်ရန်</button>`:''}</div></div>`,true);
+ modal(`<div class="modal-head"><span class="muted">${esc(i.code)} / ${esc(db.categories.find(c=>c.id===i.category)?.name||'')}</span><button onclick="back()">✕ ပိတ်ရန်</button></div><div class="detail"><div><div class="hero">${m?(m.video?`<video src="${esc(m.src)}" controls playsinline></video>`:`<img class="zoom-photo" draggable="false" src="${esc(m.src)}" alt="${esc(displayName(i))}">`):sample(i)}</div><div class="thumbs">${i.media.map((m,k)=>`<button onclick="detail('${id}',${k})">${m.video?'▷':`<img src="${esc(m.src)}" alt="Photo ${k+1}">`}</button>`).join('')}</div></div><div><div class="eyebrow">INVITATION DETAILS</div><h1>${esc(displayName(i))}</h1><div class="design-status">${i.featured?'<span>★ လူကြိုက်များ</span>':''}${admin&&i.visible===false?'<span>Customer ကို မပြထားပါ</span>':''}</div><div class="large-price">${esc(priceDisplay(i))}</div>${i.pricingMode!=='quote'?`<div class="muted">${esc(i.unit)} အတွက်${i.demo?' · နမူနာဈေးနှုန်း':''}</div>`:''}${i.priceNote?`<p class="price-note">${esc(i.priceNote)}</p>`:''}<dl class="design-specs">${specs.map(([label,value])=>`<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>${i.description?`<p style="white-space:pre-wrap">${esc(i.description)}</p>`:''}${admin?`<button class="primary" onclick="edit('${id}')">နမူနာ ပြင်ဆင်ရန်</button>`:''}</div></div>`,true);
+ const photo=document.querySelector('.hero > .zoom-photo');
+ if(photo) enablePhotoZoom(photo);
 }
 db.items=db.items.map(normalizeDesign);
 if(!Native.read())Native.initialize(JSON.stringify(db));
+
+function enablePhotoZoom(photo) {
+ const pointers = new Map();
+ let scale = 1, x = 0, y = 0;
+ const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
+ const distance = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
+
+ function updateTransform() {
+  const width = photo.clientWidth, height = photo.clientHeight;
+  const fit = Math.min(width / photo.naturalWidth, height / photo.naturalHeight);
+  x = clamp(x, Math.max(0,(photo.naturalWidth * fit * scale - width) / 2));
+  y = clamp(y, Math.max(0,(photo.naturalHeight * fit * scale - height) / 2));
+  photo.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+ }
+
+ photo.addEventListener('pointerdown', event => {
+  if(event.pointerType !== 'touch' || pointers.size === 2 || !photo.naturalWidth) return;
+  pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  photo.setPointerCapture(event.pointerId);
+ });
+
+ photo.addEventListener('pointermove', event => {
+  const previous = pointers.get(event.pointerId);
+  if(!previous) return;
+  const next = {x:event.clientX,y:event.clientY};
+  pointers.set(event.pointerId,next);
+  if(pointers.size === 2) {
+   const other = [...pointers.entries()].find(([id]) => id !== event.pointerId)[1];
+   const rect = photo.parentElement.getBoundingClientRect();
+   const anchorX = (previous.x + other.x) / 2 - rect.left - rect.width / 2;
+   const anchorY = (previous.y + other.y) / 2 - rect.top - rect.height / 2;
+   const nextScale = Math.max(1, Math.min(5, scale * distance(next,other) / Math.max(1,distance(previous,other))));
+   const ratio = nextScale / scale;
+   x = anchorX + (next.x - previous.x) / 2 - (anchorX - x) * ratio;
+   y = anchorY + (next.y - previous.y) / 2 - (anchorY - y) * ratio;
+   scale = nextScale;
+  } else if(scale > 1) {
+   x += next.x - previous.x;
+   y += next.y - previous.y;
+  }
+  updateTransform();
+ });
+
+ for(const type of ['pointerup','pointercancel','lostpointercapture']) {
+  photo.addEventListener(type,event => pointers.delete(event.pointerId));
+ }
+}

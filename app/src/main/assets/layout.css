@@ -130,3 +130,4 @@ input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:var(--ac
  .admin-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}.admin-grid-card>.admin-card-thumb{height:180px;min-height:180px;flex-basis:180px;padding:8px}.admin-grid-info{padding:10px;gap:8px}.admin-grid-info .admin-row-actions{flex-wrap:wrap}.admin-grid-info button{padding:6px 8px;min-height:40px}
  .admin-pagination{gap:4px}.admin-settings-section .row{flex-wrap:wrap}.admin-settings-section .row>input{flex-basis:100%}
 }
+.hero > .zoom-photo{touch-action:none;user-select:none;-webkit-user-drag:none}
