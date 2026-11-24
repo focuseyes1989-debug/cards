@@ -25,7 +25,31 @@ public class MainActivity extends Activity {
  boolean saveCatalog(String json){try{new JSONObject(json);File tmp=new File(getFilesDir(),"catalog.tmp");try(FileOutputStream out=new FileOutputStream(tmp)){out.write(json.getBytes("UTF-8"));out.getFD().sync();}return tmp.renameTo(new File(getFilesDir(),"catalog.json"));}catch(Exception e){return false;}}
  @Override public void onCreate(Bundle state){super.onCreate(state);authenticated=restoreAdminSession();
   getWindow().getDecorView().setSystemUiVisibility(5894);
-  web=new WebView(this); setContentView(web);updater=new AppUpdater(this); if(android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE == (getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE)) WebView.setWebContentsDebuggingEnabled(true);
+  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+  android.widget.FrameLayout content = new android.widget.FrameLayout(this);
+  web=new WebView(this);
+  content.addView(web,new android.widget.FrameLayout.LayoutParams(-1,-1));
+  setContentView(content);
+  if(Build.VERSION.SDK_INT>=30){
+   getWindow().setDecorFitsSystemWindows(false);
+   content.setOnApplyWindowInsetsListener((view,insets)->{
+    android.graphics.Insets bars=insets.getInsets(WindowInsets.Type.systemBars());
+    android.graphics.Insets keyboard=insets.getInsets(WindowInsets.Type.ime());
+    view.setPadding(bars.left,bars.top,bars.right,Math.max(bars.bottom,keyboard.bottom));
+    return insets;
+   });
+   content.requestApplyInsets();
+  }else{
+   content.getViewTreeObserver().addOnGlobalLayoutListener(()->{
+    android.graphics.Rect visible=new android.graphics.Rect();
+    content.getWindowVisibleDisplayFrame(visible);
+    int[] location=new int[2];content.getLocationOnScreen(location);
+    int covered=Math.max(0,location[1]+content.getHeight()-visible.bottom);
+    int keyboard=covered>100*getResources().getDisplayMetrics().density?covered:0;
+    if(content.getPaddingBottom()!=keyboard)content.setPadding(0,0,0,keyboard);
+   });
+  }
+  updater=new AppUpdater(this); if(android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE == (getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE)) WebView.setWebContentsDebuggingEnabled(true);
   web.getSettings().setJavaScriptEnabled(true); web.getSettings().setDomStorageEnabled(true);
   web.getSettings().setMediaPlaybackRequiresUserGesture(true);
   web.addJavascriptInterface(new Bridge(),"Native");
@@ -37,6 +61,7 @@ public class MainActivity extends Activity {
      if("/admin-pages.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("admin-pages.js"));
      if("/designs.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("designs.js"));
      if("/updates.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("updates.js"));
+     if("/keyboard.js".equals(p))return new WebResourceResponse("application/javascript","UTF-8",getAssets().open("keyboard.js"));
      if("/layout.css".equals(p))return new WebResourceResponse("text/css","UTF-8",getAssets().open("layout.css"));
      return new WebResourceResponse("text/html","UTF-8",getAssets().open("index.html"));
     }catch(Exception e){return new WebResourceResponse("text/plain","UTF-8",new ByteArrayInputStream(new byte[0]));}

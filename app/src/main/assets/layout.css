@@ -131,3 +131,8 @@ input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:var(--ac
  .admin-pagination{gap:4px}.admin-settings-section .row{flex-wrap:wrap}.admin-settings-section .row>input{flex-basis:100%}
 }
 .hero > .zoom-photo{touch-action:none;user-select:none;-webkit-user-drag:none}
+/* Dialogs follow the visible viewport while the keyboard opens or closes. */
+.overlay{top:var(--visible-top,0px);bottom:auto;height:var(--visible-height,100dvh)}
+.overlay .modal{max-height:calc(var(--visible-height,100dvh) - 40px);scroll-padding-block:16px}
+input,textarea,select{scroll-margin-block:16px}
+@media(max-width:600px) and (orientation:portrait){.overlay .modal{max-height:calc(var(--visible-height,100dvh) - 20px)}}
